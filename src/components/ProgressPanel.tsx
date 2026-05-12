@@ -24,7 +24,7 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ progress, visible 
     <div className="w-full space-y-3">
       {/* Progress bar */}
       <div className="space-y-1">
-        <div className="flex justify-between text-xs text-gray-500">
+        <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
           <span>{phaseLabel}</span>
           <span>
             {progress.phase !== 'error'
@@ -32,7 +32,7 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ progress, visible 
               : progress.error}
           </span>
         </div>
-        <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+        <div className="w-full h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-[width] duration-500 ease-out ${progressColor}`}
             style={{ width: `${progress.progress}%` }}
@@ -42,8 +42,8 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ progress, visible 
 
       {/* Thinking window */}
       {progress.thinking_content && (
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 max-h-32 overflow-y-auto">
-          <p className="text-xs text-gray-500 whitespace-pre-wrap break-words leading-relaxed">
+        <div className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-3 max-h-32 overflow-y-auto">
+          <p className="text-xs text-gray-500 dark:text-gray-400 whitespace-pre-wrap break-words leading-relaxed">
             {progress.thinking_content.slice(-500)}
           </p>
         </div>

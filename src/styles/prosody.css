@@ -55,7 +55,30 @@
   /* 加大行间距，避免符号上下重叠 */
   line-height: 3.0 !important;
   letter-spacing: 0.02em;
+  background: #ffffff;
+  color: #1e293b;
 }
+
+/* 深色模式 */
+.dark .prosody-result {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+.dark .prosody-result .text-gray-500 { color: #94a3b8; }
+.dark .prosody-result .text-gray-400 { color: #94a3b8; }
+.dark .prosody-result .text-gray-700 { color: #cbd5e1; }
+.dark .prosody-result .text-gray-800 { color: #e2e8f0; }
+.dark .prosody-result .text-blue-700 { color: #60a5fa; }
+.dark .prosody-result .text-purple-600 { color: #a78bfa; }
+.dark .prosody-result .text-orange-600 { color: #fb923c; }
+.dark .prosody-result .text-red-600 { color: #f87171; }
+.dark .prosody-result .text-red-700 { color: #f87171; }
+.dark .prosody-result .text-green-700 { color: #4ade80; }
+.dark .prosody-result .bg-white { background: #1e293b; }
+.dark .prosody-result .bg-blue-50 { background: #1e3a5f; }
+.dark .prosody-result .border-gray-200 { border-color: #334155; }
+.dark .sentence-heavy { background: rgba(248, 113, 113, 0.15); }
+.dark .sentence-light { background: rgba(148, 163, 184, 0.12); }
 
 /* ===== 重音 ===== */
 .stress-heavy {

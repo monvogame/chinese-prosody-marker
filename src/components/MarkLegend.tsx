@@ -22,15 +22,15 @@ const LEGEND_ITEMS = [
 
 export const MarkLegend: React.FC = () => {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-      <h3 className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wide">
+    <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 p-4">
+      <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wide">
         标记符号说明
       </h3>
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
         {LEGEND_ITEMS.map((item) => (
           <div
             key={item.css}
-            className="flex items-center gap-1.5 text-xs text-gray-600"
+            className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-300"
           >
             <span
               className="inline-flex items-center justify-center w-5 h-5 rounded text-xs font-bold"

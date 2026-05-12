@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { TextInput } from './components/TextInput';
 import { SettingsModal } from './components/SettingsModal';
 import { ProgressPanel } from './components/ProgressPanel';
@@ -30,8 +30,28 @@ export default function App() {
   const [agentVersion, setAgentVersion] = useState<string>('original');
   const [progress, setProgress] = useState<AnalysisProgress>(INITIAL_PROGRESS);
   const [result, setResult] = useState<ProsodyResult | null>(null);
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    const saved = localStorage.getItem('prosody-dark-mode');
+    if (saved !== null) return saved === 'true';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
 
   const abortRef = useRef<AbortController | null>(null);
+
+  // 初始化 dark 类名
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 同步 dark 类名到 html 元素
+  const toggleDarkMode = useCallback(() => {
+    setDarkMode((prev) => {
+      const next = !prev;
+      localStorage.setItem('prosody-dark-mode', String(next));
+      document.documentElement.classList.toggle('dark', next);
+      return next;
+    });
+  }, []);
 
   const handleSaveConfig = useCallback((newConfig: ApiConfig) => {
     setConfig(newConfig);
@@ -129,26 +149,47 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-40">
+      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 dark:bg-slate-900/80 dark:border-slate-700 sticky top-0 z-40">
         <div className="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
           <div>
-            <h1 className="text-lg font-bold text-gray-800">中文韵律标记助手</h1>
-            <p className="text-xs text-gray-500">AI 驱动的朗读标记工具</p>
+            <h1 className="text-lg font-bold text-gray-800 dark:text-gray-100">中文韵律标记助手</h1>
+            <p className="text-xs text-gray-500 dark:text-gray-400">AI 驱动的朗读标记工具</p>
           </div>
-          <button
-            onClick={() => setSettingsOpen(true)}
-            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-            title="API 设置"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </button>
+          <div className="flex items-center gap-1">
+            {/* 深色模式切换 */}
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              title={darkMode ? '切换到浅色模式' : '切换到深色模式'}
+            >
+              {darkMode ? (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+            {/* API 设置 */}
+            <button
+              onClick={() => setSettingsOpen(true)}
+              className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              title="API 设置"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -168,12 +209,13 @@ export default function App() {
             value={agentVersion}
             onChange={(e) => setAgentVersion(e.target.value)}
             disabled={analyzing}
-            className="px-3 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg
+            className="px-3 py-3 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-200 rounded-lg
                        text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500
                        disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-            <option value="original">原版 Agent</option>
             <option value="test_claude">测试版本 Claude</option>
+            <option value="origin_2.0">原版 Agent2.0</option>
+            <option value="original">原版 Agent</option>
           </select>
           <button
             onClick={handleAnalyze}
@@ -208,7 +250,7 @@ export default function App() {
 
         {/* Error display */}
         {progress.phase === 'error' && !analyzing && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700">
+          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg p-4 text-sm text-red-700 dark:text-red-400">
             {progress.error}
             <button
               onClick={handleRetry}
@@ -236,7 +278,7 @@ export default function App() {
       />
 
       {/* Footer */}
-      <footer className="text-center py-6 text-xs text-gray-400">
+      <footer className="text-center py-6 text-xs text-gray-400 dark:text-gray-600">
         中文韵律标记助手 · 基于 AI 的朗读标记工具 · 纯前端存储 API Key
       </footer>
     </div>

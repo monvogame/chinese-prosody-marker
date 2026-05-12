@@ -45,15 +45,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, config, onSa
     setTesting(false);
   };
 
+  const inputClass = "w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg text-sm text-gray-800 dark:text-gray-100 bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent";
+  const labelClass = "block text-sm font-medium text-gray-600 dark:text-gray-400 mb-1";
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 p-6 space-y-4">
+      <div className="relative bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full max-w-md mx-4 p-6 space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold text-gray-800">API 设置</h3>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">API 设置</h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-xl leading-none transition-colors"
+            className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-xl leading-none transition-colors"
           >
             ×
           </button>
@@ -61,12 +64,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, config, onSa
 
         {/* Provider */}
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">模型提供商</label>
+          <label className={labelClass}>模型提供商</label>
           <select
             value={local.provider}
             onChange={(e) => setLocal({ ...local, provider: e.target.value as LLMProvider })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
-                       focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+            className={inputClass}
           >
             {PROVIDERS.map((p) => (
               <option key={p.value} value={p.value}>{p.label}</option>
@@ -76,35 +78,33 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, config, onSa
 
         {/* API Key */}
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">API Key</label>
+          <label className={labelClass}>API Key</label>
           <input
             type="password"
             value={local.api_key}
             onChange={(e) => setLocal({ ...local, api_key: e.target.value })}
             placeholder={local.provider === 'anthropic' ? 'sk-ant-...' : 'sk-...'}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
-                       focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+            className={inputClass}
           />
         </div>
 
         {/* Base URL (for custom) */}
         {local.provider === 'custom' && (
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Base URL</label>
+            <label className={labelClass}>Base URL</label>
             <input
               type="text"
               value={local.base_url || ''}
               onChange={(e) => setLocal({ ...local, base_url: e.target.value })}
               placeholder="https://api.example.com/v1"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
-                         focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+              className={inputClass}
             />
           </div>
         )}
 
         {/* Model */}
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Model (可选)</label>
+          <label className={labelClass}>Model (可选)</label>
           <input
             type="text"
             value={local.model || ''}
@@ -115,15 +115,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, config, onSa
               local.provider === 'deepseek' ? '默认: deepseek-v4-pro[1m]' :
               '输入模型名称'
             }
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm
-                       focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+            className={inputClass}
           />
         </div>
 
         {/* Test result */}
         {testResult && (
           <div className={`text-sm px-3 py-2 rounded-lg max-h-40 overflow-y-auto whitespace-pre-wrap break-all ${
-            testResult.ok ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'
+            testResult.ok
+              ? 'bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400'
+              : 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400'
           }`}>
             {testResult.msg}
           </div>
@@ -134,8 +135,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, config, onSa
           <button
             onClick={handleTest}
             disabled={testing || !local.api_key}
-            className="flex-1 px-4 py-2 text-sm border border-gray-300 rounded-lg
-                       hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed
+            className="flex-1 px-4 py-2 text-sm border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-200 rounded-lg
+                       hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed
                        transition-colors"
           >
             {testing ? '测试中...' : '测试连接'}

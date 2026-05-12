@@ -12,6 +12,7 @@ from utils.time_estimator import estimate_analysis_time, calculate_progress
 from agents.agent1_prosody import run_agent1
 from agents.agent2_marker import run_agent2
 from agents.test_agent2_marker import run_test_agent2
+from agents.origin_agent2_0_2 import run_origin_agent2
 
 router = APIRouter()
 
@@ -19,7 +20,7 @@ router = APIRouter()
 class AnalyzeRequest(BaseModel):
     text: str
     api_config: ApiConfigModel
-    version: str = "original"  # "original" | "test_claude"
+    version: str = "original"  # "test_claude" | "origin_2.0" | "original"
 
 
 async def _run_analysis(text: str, config: ApiConfigModel, version: str = "original"):
@@ -38,6 +39,10 @@ async def _run_analysis(text: str, config: ApiConfigModel, version: str = "origi
             prompt_name = "test_agent1_system.txt"
             agent2_runner = run_test_agent2
             agent2_label = "正在转换标记数据（测试版）..."
+        elif version == "origin_2.0":
+            prompt_name = "origin_agent2.0.txt"
+            agent2_runner = run_origin_agent2
+            agent2_label = "正在转换标记数据（原版2.0）..."
         else:
             prompt_name = "agent1_system.txt"
             agent2_runner = run_agent2
