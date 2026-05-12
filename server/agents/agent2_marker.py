@@ -1,10 +1,7 @@
 """Agent2 - 标记工程师"""
-import json
-import re
 from typing import AsyncGenerator, List
 
 from utils.llm_client import LLMClient
-from utils.shared import load_prompt, extract_json
 
 
 PUNCTUATION = set("，。！？；：""''、…—～·,.;:?!\"'…~-()（）《》<>")
@@ -70,23 +67,9 @@ def convert_word_groups_to_tokens(word_groups: list) -> list:
 
 
 async def run_agent2(client: LLMClient, agent1_output: dict) -> AsyncGenerator[dict, None]:
-    system = load_prompt("agent2_system.txt")
-    user_msg = json.dumps(agent1_output, ensure_ascii=False)
-
-    full_text = ""
-    async for event in client.stream_chat(system, user_msg):
-        if event["type"] == "thinking":
-            yield {"type": "thinking", "content": event["content"]}
-        elif event["type"] == "text":
-            full_text += event["content"]
-        elif event["type"] == "done":
-            full_text = event["content"]
-
-    try:
-        result = json.loads(extract_json(full_text))
-        yield {"type": "result", "data": result}
-    except json.JSONDecodeError:
-        yield {"type": "result", "data": rule_based_convert(agent1_output)}
+    yield {"type": "thinking", "content": "正在转换标记数据..."}
+    result = rule_based_convert(agent1_output)
+    yield {"type": "result", "data": result}
 
 
 def rule_based_convert(agent1_output: dict) -> dict:

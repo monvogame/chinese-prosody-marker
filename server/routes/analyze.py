@@ -3,6 +3,7 @@ import time
 
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 
 from models import ApiConfigModel
 from utils.llm_client import LLMClient, LLMConfig
@@ -14,8 +15,9 @@ from agents.agent2_marker import run_agent2
 router = APIRouter()
 
 
-class AnalyzeRequest(ApiConfigModel):
+class AnalyzeRequest(BaseModel):
     text: str
+    api_config: ApiConfigModel
 
 
 async def _run_analysis(text: str, config: ApiConfigModel):
@@ -46,19 +48,14 @@ async def _run_analysis(text: str, config: ApiConfigModel):
             yield send_error("PARSE_ERROR", "Agent1 分析未产生结果")
             return
 
-        yield send_phase_complete("agent1", 60)
+        yield send_phase_complete("agent1", 80)
 
-        # Agent2 阶段
-        agent2_start = time.time()
-        yield send_thinking("agent2", "正在转换标记数据...", 60)
+        # Agent2 阶段（规则引擎，瞬时完成）
+        yield send_thinking("agent2", "正在转换标记数据...", 85)
 
         agent2_output = None
         async for event in run_agent2(client, agent1_output):
-            if event["type"] == "thinking":
-                elapsed = time.time() - agent2_start
-                progress = 60 + calculate_progress("agent2", elapsed, estimate.agent2_seconds, char_count) * 0.35
-                yield send_thinking("agent2", event["content"], min(int(progress), 98))
-            elif event["type"] == "result":
+            if event["type"] == "result":
                 agent2_output = event["data"]
 
         if agent2_output is None:
@@ -96,14 +93,14 @@ async def analyze(request: AnalyzeRequest):
             _empty_error("请输入文本内容"),
             media_type="text/event-stream",
         )
-    if not request.api_key:
+    if not request.api_config.api_key:
         return StreamingResponse(
             _empty_error("请先配置 API Key"),
             media_type="text/event-stream",
         )
 
     return StreamingResponse(
-        _run_analysis(text, request),
+        _run_analysis(text, request.api_config),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",

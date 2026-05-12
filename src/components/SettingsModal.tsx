@@ -122,7 +122,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, config, onSa
 
         {/* Test result */}
         {testResult && (
-          <div className={`text-sm px-3 py-2 rounded-lg ${
+          <div className={`text-sm px-3 py-2 rounded-lg max-h-40 overflow-y-auto whitespace-pre-wrap break-all ${
             testResult.ok ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'
           }`}>
             {testResult.msg}

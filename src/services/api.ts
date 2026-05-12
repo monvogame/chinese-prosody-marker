@@ -15,5 +15,9 @@ export async function testConnection(config: ApiConfig): Promise<TestConnectionR
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ api_config: config }),
   });
+  if (!resp.ok) {
+    const text = await resp.text();
+    return { success: false, message: `HTTP ${resp.status}: ${text}` };
+  }
   return resp.json();
 }
