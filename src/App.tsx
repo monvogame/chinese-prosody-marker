@@ -3,6 +3,7 @@ import { TextInput } from './components/TextInput';
 import { SettingsModal } from './components/SettingsModal';
 import { ProgressPanel } from './components/ProgressPanel';
 import { ProsodyResultPanel } from './components/ProsodyResult';
+import { MarkLegend } from './components/MarkLegend';
 import { connectSSE } from './services/sse';
 import { loadApiConfig, saveApiConfig } from './services/storage';
 import type {
@@ -201,6 +202,9 @@ export default function App() {
           progress={progress}
           visible={analyzing || progress.phase === 'error'}
         />
+
+        {/* Mark Legend */}
+        <MarkLegend />
 
         {/* Error display */}
         {progress.phase === 'error' && !analyzing && (

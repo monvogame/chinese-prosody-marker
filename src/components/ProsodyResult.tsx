@@ -23,7 +23,17 @@ export const ProsodyResultPanel: React.FC<ProsodyResultProps> = ({
       return;
     }
     try {
-      await exportToPng(el);
+      // 从分析结果中取文章前几个字作为文件名
+      let prefix = '未命名';
+      if (data?.paragraphs?.[0]?.sentences?.[0]?.original_text) {
+        const raw = data.paragraphs[0].sentences[0].original_text.replace(/[，。！？；：""''、…—～·\s,.;:?!\"'…~\-()（）《》<>「」『』【】]/g, '');
+        prefix = raw.slice(0, 8);
+      }
+      const now = new Date();
+      const pad = (n: number) => String(n).padStart(2, '0');
+      const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      const filename = `【韵律】${prefix} ${timestamp}.png`;
+      await exportToPng(el, filename);
     } catch (e) {
       console.error('Export failed:', e);
       alert(`导出失败：${e instanceof Error ? e.message : '未知错误'}`);

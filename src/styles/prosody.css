@@ -1,12 +1,63 @@
 /* 标记渲染专用样式 */
 
+/* ===== 导出兼容区 =====
+   Tailwind v4 使用 oklch() 颜色，html2canvas 无法解析。
+   此处用标准 hex/rgb 覆盖 .prosody-result 内所有颜色。 */
+.prosody-result,
+.prosody-result * {
+  /* Tailwind 颜色 → 标准色映射 */
+  --tw-text-gray-500: #6b7280;
+  --tw-text-gray-400: #9ca3af;
+  --tw-text-gray-700: #374151;
+  --tw-text-gray-800: #1f2937;
+  --tw-text-blue-700: #1d4ed8;
+  --tw-text-purple-600: #7c3aed;
+  --tw-text-orange-600: #ea580c;
+  --tw-text-red-600: #dc2626;
+  --tw-bg-white: #ffffff;
+  --tw-bg-blue-50: #eff6ff;
+  --tw-bg-red-50: #fef2f2;
+  --tw-border-gray-200: #e5e7eb;
+}
+
+.prosody-result.text-gray-500,
+.prosody-result .text-gray-500 { color: #6b7280; }
+.prosody-result.text-gray-400,
+.prosody-result .text-gray-400 { color: #9ca3af; }
+.prosody-result.text-gray-700,
+.prosody-result .text-gray-700 { color: #374151; }
+.prosody-result.text-gray-800,
+.prosody-result .text-gray-800 { color: #1f2937; }
+.prosody-result.text-blue-700,
+.prosody-result .text-blue-700 { color: #1d4ed8; }
+.prosody-result.text-purple-600,
+.prosody-result .text-purple-600 { color: #7c3aed; }
+.prosody-result.text-orange-600,
+.prosody-result .text-orange-600 { color: #ea580c; }
+.prosody-result.text-red-600,
+.prosody-result .text-red-600 { color: #dc2626; }
+.prosody-result.text-red-700,
+.prosody-result .text-red-700 { color: #b91c1c; }
+.prosody-result.text-green-700,
+.prosody-result .text-green-700 { color: #15803d; }
+.prosody-result.bg-white,
+.prosody-result .bg-white { background-color: #ffffff; }
+.prosody-result.bg-blue-50,
+.prosody-result .bg-blue-50 { background-color: #eff6ff; }
+.prosody-result.border-gray-200,
+.prosody-result .border-gray-200 { border-color: #e5e7eb; }
+
+/* ===== 基础设置 ===== */
 .prosody-result {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
+  /* 加大行间距，避免符号上下重叠 */
+  line-height: 3.0 !important;
+  letter-spacing: 0.02em;
 }
 
-/* 重音 */
+/* ===== 重音 ===== */
 .stress-heavy {
   font-weight: 700;
   position: relative;
@@ -14,10 +65,10 @@
 .stress-heavy::after {
   content: "●";
   position: absolute;
-  bottom: -8px;
+  bottom: -10px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 6px;
+  font-size: 7px;
   line-height: 1;
   color: #e53e3e;
 }
@@ -28,80 +79,80 @@
   font-size: 0.9em;
 }
 
-/* 停顿 */
+/* ===== 停顿 ===== */
 .pause-short::after {
   content: "";
   border-right: 1px solid #a0aec0;
-  margin: 0 2px 0 1px;
+  margin: 0 3px 0 2px;
 }
 .pause-medium::after {
   content: "";
   border-right: 2px solid #4299e1;
-  margin: 0 4px 0 2px;
+  margin: 0 5px 0 3px;
 }
 .pause-long::after {
   content: "";
   border-right: 3px solid #2b6cb0;
-  margin: 0 6px 0 3px;
+  margin: 0 7px 0 4px;
 }
 
-/* 连读 */
+/* ===== 连读 ===== */
 .link-next {
   position: relative;
 }
 .link-next::before {
   content: "⌒";
   position: absolute;
-  top: -14px;
+  top: -16px;
   right: -4px;
   font-size: 10px;
   line-height: 1;
   color: #48bb78;
 }
 
-/* 语调 */
+/* ===== 语调 ===== */
 .tone-up::after {
   content: "↑";
-  font-size: 8px;
+  font-size: 9px;
   color: #ed8936;
   vertical-align: super;
 }
 .tone-down::after {
   content: "↓";
-  font-size: 8px;
+  font-size: 9px;
   color: #4299e1;
   vertical-align: sub;
 }
 
-/* 气息 */
+/* ===== 气息 ===== */
 .breath-inhale::before {
   content: "△";
   color: #48bb78;
   margin-right: 2px;
-  font-size: 8px;
+  font-size: 9px;
   vertical-align: super;
 }
 .breath-exhale::before {
   content: "▽";
   color: #ed8936;
   margin-right: 2px;
-  font-size: 8px;
+  font-size: 9px;
   vertical-align: super;
 }
 
-/* 句重/句轻 */
+/* ===== 句重/句轻 ===== */
 .sentence-heavy {
   background: rgba(254, 178, 178, 0.2);
   border-radius: 2px;
-  padding: 2px 0;
+  padding: 3px 0;
 }
 .sentence-light {
   background: rgba(203, 213, 224, 0.2);
   border-radius: 2px;
-  padding: 2px 0;
+  padding: 3px 0;
 }
 
-/* 渐强渐弱 - applied to wrapper spans */
+/* ===== 渐强渐弱 ===== */
 .volume-crescendo {
   border-bottom: 2px solid;
   border-image: linear-gradient(to right, transparent, #e53e3e) 1;
@@ -111,44 +162,42 @@
   border-image: linear-gradient(to right, #e53e3e, transparent) 1;
 }
 
-/* 轻声 - 字符正上方圆点标记，模拟汉语教材轻声标注习惯 */
+/* ===== 轻声 ===== */
 .neutral-tone::before {
   content: "·";
   position: absolute;
-  top: -6px;
+  top: -8px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: bold;
   color: #805ad5;
   line-height: 1;
 }
 
-/* 儿化 - 字符右上角小 ʴ */
+/* ===== 儿化 ===== */
 .erhua::after {
   content: "ʴ";
-  font-size: 7px;
+  font-size: 8px;
   color: #dd6b20;
   vertical-align: super;
   margin-left: 1px;
 }
 
-/* 测试版：语调曲折 */
+/* ===== 测试版：语调曲折 ===== */
 .tone-curve::after {
   content: "↗↘";
-  font-size: 7px;
+  font-size: 8px;
   color: #805ad5;
   vertical-align: super;
   margin-left: 1px;
 }
 
-/* 测试版：语速加快 - 红色下划线 */
+/* ===== 测试版：语速 ===== */
 .speed-faster {
   border-bottom: 1.5px dashed #e53e3e;
   padding-bottom: 1px;
 }
-
-/* 测试版：语速减慢 - 蓝色下划线 */
 .speed-slower {
   border-bottom: 1.5px dotted #4299e1;
   padding-bottom: 1px;

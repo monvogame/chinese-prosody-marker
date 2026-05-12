@@ -164,6 +164,46 @@ def validate_and_fix_tokens(tokens: list) -> list:
     return tokens
 
 
+def _ensure_punctuation_test(tokens: list, original_text: str) -> list:
+    """根据原句文本补回 LLM 可能遗漏的标点符号（测试版）"""
+    if not original_text:
+        return tokens
+
+    orig_chars = list(original_text.replace(" ", "").replace("\n", "").replace("\r", ""))
+
+    result = []
+    ti = 0
+    for orig_ch in orig_chars:
+        if ti < len(tokens) and tokens[ti]["text"] == orig_ch:
+            result.append(tokens[ti])
+            ti += 1
+        else:
+            found = False
+            for k in range(ti, min(ti + 3, len(tokens))):
+                if tokens[k]["text"] == orig_ch:
+                    for skip in range(ti, k):
+                        result.append(tokens[skip])
+                    result.append(tokens[k])
+                    ti = k + 1
+                    found = True
+                    break
+            if not found:
+                if _is_punctuation(orig_ch):
+                    punct_rule = PUNCT_RULES.get(orig_ch, {"pause_after": "none", "pause_type": "无", "tone_direction": "flat"})
+                    result.append({"text": orig_ch, "marks": {
+                        **PUNCT_DEFAULT_MARKS,
+                        "pause_after": punct_rule["pause_after"],
+                        "pause_type": punct_rule["pause_type"],
+                        "tone_direction": punct_rule["tone_direction"],
+                    }})
+
+    while ti < len(tokens):
+        result.append(tokens[ti])
+        ti += 1
+
+    return result
+
+
 def rule_based_convert_test(agent1_output: dict) -> dict:
     """将测试版 Agent1 输出转换为测试版最终格式"""
     analysis = agent1_output.get("analysis", {})
@@ -179,6 +219,7 @@ def rule_based_convert_test(agent1_output: dict) -> dict:
             word_groups = sent.get("word_groups", [])
             tokens = convert_word_groups_to_tokens_test(word_groups)
             tokens = validate_and_fix_tokens(tokens)
+            tokens = _ensure_punctuation_test(tokens, sent.get("text", ""))
 
             total_tokens += len(tokens)
             total_chars += len(sent.get("text", ""))
