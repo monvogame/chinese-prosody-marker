@@ -21,9 +21,33 @@ class AnalyzeRequest(BaseModel):
     text: str
     api_config: ApiConfigModel
     version: str = "original"  # "test_claude" | "origin_2.0" | "original"
+    directive: str = ""  # 用户引导描述（自然语言）
 
 
-async def _run_analysis(text: str, config: ApiConfigModel, version: str = "original"):
+def _build_directive_block(directive: str) -> str:
+    """将用户引导描述构建为注入 Agent1 prompt 的文本块"""
+    if not directive or not directive.strip():
+        return ""
+    d = directive.strip()
+    return f"""
+# 用户引导描述
+
+以下是用户提供的分析引导信息，请在分析时充分考虑：
+
+---
+{d}
+---
+
+请根据以上引导调整你的分析策略：
+- 如果指定了角色聚焦，请在分析时特别关注该角色的台词情感和表达方式
+- 如果指定了受众群体，请据此调整语气分量和节奏建议
+- 如果指定了风格偏好，请据此调整整体基调和表达方式
+- 如果提供了场景补充，请将其纳入情景再现和内在语分析
+
+"""
+
+
+async def _run_analysis(text: str, config: ApiConfigModel, version: str = "original", directive: str = ""):
     llm_config = LLMConfig(
         provider=config.provider, api_key=config.api_key,
         base_url=config.base_url, model=config.model,
@@ -48,12 +72,15 @@ async def _run_analysis(text: str, config: ApiConfigModel, version: str = "origi
             agent2_runner = run_agent2
             agent2_label = "正在转换标记数据..."
 
+        # 构建 directive 注入文本
+        directive_block = _build_directive_block(directive)
+
         # Agent1 阶段
         agent1_start = time.time()
         yield send_thinking("agent1", "正在启动韵律分析...", 0)
 
         agent1_output = None
-        async for event in run_agent1(client, text, prompt_name=prompt_name):
+        async for event in run_agent1(client, text, prompt_name=prompt_name, directive=directive_block):
             if event["type"] == "thinking":
                 elapsed = time.time() - agent1_start
                 progress = calculate_progress("agent1", elapsed, estimate.total_seconds, char_count)
@@ -123,7 +150,7 @@ async def analyze(request: AnalyzeRequest):
         )
 
     return StreamingResponse(
-        _run_analysis(text, request.api_config, request.version),
+        _run_analysis(text, request.api_config, request.version, request.directive),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",

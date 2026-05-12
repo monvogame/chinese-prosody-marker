@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { TextInput } from './components/TextInput';
+import { DirectiveInput } from './components/DirectiveInput';
 import { SettingsModal } from './components/SettingsModal';
 import { ProgressPanel } from './components/ProgressPanel';
 import { ProsodyResultPanel } from './components/ProsodyResult';
@@ -28,6 +29,7 @@ export default function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [agentVersion, setAgentVersion] = useState<string>('original');
+  const [directive, setDirective] = useState<string>('');
   const [progress, setProgress] = useState<AnalysisProgress>(INITIAL_PROGRESS);
   const [result, setResult] = useState<ProsodyResult | null>(null);
   const [darkMode, setDarkMode] = useState<boolean>(() => {
@@ -124,10 +126,11 @@ export default function App() {
         },
       },
       agentVersion,
+      directive,
     );
 
     abortRef.current = controller;
-  }, [text, config, agentVersion]);
+  }, [text, config, agentVersion, directive]);
 
   const handleRetry = useCallback(() => {
     setResult(null);
@@ -195,6 +198,13 @@ export default function App() {
 
       {/* Main */}
       <main className="max-w-3xl mx-auto px-4 py-6 space-y-4" onKeyDown={handleKeyDown}>
+        {/* Directive */}
+        <DirectiveInput
+          value={directive}
+          onChange={setDirective}
+          disabled={analyzing}
+        />
+
         {/* Input */}
         <TextInput
           value={text}

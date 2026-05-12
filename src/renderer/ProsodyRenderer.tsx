@@ -54,6 +54,23 @@ export const ProsodyRenderer: React.FC<ProsodyRendererProps> = ({ data, containe
         </div>
       )}
 
+      {data.directive_response?.understood_directive && (
+        <div className="text-center text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded px-3 py-2 mb-4" style={{ userSelect: 'none' }}>
+          <span className="font-medium">引导响应：</span>
+          {data.directive_response.understood_directive}
+          {data.directive_response.focus_character && (
+            <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
+              聚焦：{data.directive_response.focus_character}
+            </span>
+          )}
+          {data.directive_response.audience && (
+            <span className="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300">
+              受众：{data.directive_response.audience}
+            </span>
+          )}
+        </div>
+      )}
+
       {data.key_emotions && data.key_emotions.length > 0 && (
         <div className="text-center text-xs text-gray-400 mb-4 flex justify-center gap-2" style={{ userSelect: 'none' }}>
           {data.key_emotions.map((e, i) => (

@@ -11,13 +11,16 @@ def split_text_into_paragraphs(text: str) -> List[str]:
     return [p.strip() for p in re.split(r"\n\s*\n", text.strip()) if p.strip()]
 
 
-async def run_agent1(client: LLMClient, text: str, prompt_name: str = "agent1_system.txt") -> AsyncGenerator[dict, None]:
+async def run_agent1(client: LLMClient, text: str, prompt_name: str = "agent1_system.txt", directive: str = "") -> AsyncGenerator[dict, None]:
     paragraphs = split_text_into_paragraphs(text)
     total = len(paragraphs)
     all_results = []
 
     for i, para in enumerate(paragraphs):
         system = load_prompt(prompt_name)
+        # 将用户引导描述注入 system prompt 末尾
+        if directive.strip() and "待分析文本" in system:
+            system = system.replace("# 待分析文本", f"{directive}# 待分析文本")
         user_msg = f"\n注意：这是全文的第 {i + 1}/{total} 段。请只分析这一段文本，确保输出严格的 JSON 格式。\n\n{para}"
 
         full_text = ""

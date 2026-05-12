@@ -55,11 +55,22 @@ export interface ProsodyParagraph {
   identity_sense?: string;
 }
 
+export interface DirectiveResponse {
+  understood_directive: string;
+  focus_character: string | null;
+  focus_type: 'full' | 'character_only' | 'narrator_only';
+  audience: string | null;
+  style_guidance: string | null;
+  scene_context: string | null;
+  applied_adjustments: string[];
+}
+
 export interface ProsodyResult {
   title?: string;
   overall_emotion: string;
   text_type?: string;
   paragraphs: ProsodyParagraph[];
+  directive_response?: DirectiveResponse;
   metadata?: {
     char_count: number;
     analysis_time_ms: number;

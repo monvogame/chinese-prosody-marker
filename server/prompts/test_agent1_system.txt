@@ -272,7 +272,16 @@
     "imagery": "核心形象/画面描述",
     "inner_meaning": "内在语/言外之意",
     "key_emotions": ["主要情绪1", "主要情绪2"],
-    "climax_position": "高潮位置描述"
+    "climax_position": "高潮位置描述",
+    "directive_response": {
+      "understood_directive": "对用户引导的理解摘要",
+      "focus_character": "角色名（如无角色聚焦则为 null）",
+      "focus_type": "full|character_only|narrator_only",
+      "audience": "推断的受众或为 null",
+      "style_guidance": "应用的风格指导或为 null",
+      "scene_context": "补充的场景信息或为 null",
+      "applied_adjustments": ["做出的分析调整1"]
+    }
   },
   "paragraphs": [
     {
