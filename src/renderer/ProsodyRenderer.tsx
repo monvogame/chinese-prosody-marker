@@ -34,13 +34,31 @@ export const ProsodyRenderer: React.FC<ProsodyRendererProps> = ({ data, containe
         </h2>
       )}
 
-      {data.overall_emotion && (
+      {(data.overall_emotion || data.overall_tone) && (
         <div
           className="text-center text-sm text-gray-500 mb-6"
           style={{ userSelect: 'none' }}
         >
-          情绪基调：{data.overall_emotion}
+          {data.overall_tone
+            ? `整体基调：${data.overall_tone}`
+            : `情绪基调：${data.overall_emotion}`
+          }
           {data.text_type && ` | ${data.text_type}`}
+          {data.purpose && ` | 目的：${data.purpose}`}
+        </div>
+      )}
+
+      {data.imagery && (
+        <div className="text-center text-xs text-gray-400 mb-4" style={{ userSelect: 'none' }}>
+          形象：{data.imagery}
+        </div>
+      )}
+
+      {data.key_emotions && data.key_emotions.length > 0 && (
+        <div className="text-center text-xs text-gray-400 mb-4 flex justify-center gap-2" style={{ userSelect: 'none' }}>
+          {data.key_emotions.map((e, i) => (
+            <span key={i} className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">{e}</span>
+          ))}
         </div>
       )}
 
@@ -64,6 +82,13 @@ export const ProsodyRenderer: React.FC<ProsodyRendererProps> = ({ data, containe
 const ParagraphBlock: React.FC<{ paragraph: ProsodyParagraph }> = ({ paragraph }) => {
   return (
     <div className="paragraph-block">
+      {(paragraph.summary || paragraph.rhythm_type || paragraph.identity_sense) && (
+        <div className="text-xs text-gray-400 mb-2 flex gap-3" style={{ userSelect: 'none' }}>
+          {paragraph.summary && <span>{paragraph.summary}</span>}
+          {paragraph.rhythm_type && <span className="text-purple-600">节奏：{paragraph.rhythm_type}</span>}
+          {paragraph.identity_sense && <span className="text-orange-600">{paragraph.identity_sense}</span>}
+        </div>
+      )}
       {paragraph.sentences.map((sent) => (
         <SentenceBlock key={sent.sentence_index} sentence={sent} />
       ))}

@@ -26,6 +26,7 @@ def _punct_marks(ch: str) -> dict:
     return {
         "stress": "normal", "tone": "flat", "pause_after": pause_map.get(ch, "none"),
         "link_next": False, "breath_before": "none", "volume_trend": "none",
+        "neutral_tone": False, "erhua": False,
     }
 
 
@@ -43,6 +44,8 @@ def convert_word_groups_to_tokens(word_groups: list) -> list:
         link_next = wg.get("link_next", False)
         breath_before = wg.get("breath_before", "none")
         volume_trend = wg.get("volume_trend", "none")
+        neutral_tone = wg.get("neutral_tone", False)
+        erhua = wg.get("erhua", False)
 
         for j, ch in enumerate(chars):
             is_last = (j == len(chars) - 1)
@@ -57,6 +60,8 @@ def convert_word_groups_to_tokens(word_groups: list) -> list:
                     "link_next": (link_next if is_last else True),
                     "breath_before": breath_before if j == 0 else "none",
                     "volume_trend": volume_trend,
+                    "neutral_tone": neutral_tone,
+                    "erhua": erhua,
                 }
                 if marks["link_next"] and marks["pause_after"] != "none":
                     marks["pause_after"] = "none"

@@ -18,13 +18,14 @@ export function connectSSE(
   text: string,
   apiConfig: { provider: string; api_key: string; base_url?: string; model?: string },
   callbacks: SSECallbacks,
+  version: string = 'original',
 ): AbortController {
   const controller = new AbortController();
 
   fetch('/api/analyze', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, api_config: apiConfig }),
+    body: JSON.stringify({ text, api_config: apiConfig, version }),
     signal: controller.signal,
   })
     .then(async (response) => {

@@ -15,6 +15,15 @@ export interface TokenMarks {
   link_next: boolean;
   breath_before: BreathType;
   volume_trend: VolumeTrend;
+  neutral_tone: boolean;
+  erhua: boolean;
+  // 测试版 (schema v2.0) 字段
+  stress_level?: 'strong' | 'medium' | 'light' | 'none';
+  stress_method?: 'volume' | 'duration' | 'pitch' | 'speed' | 'pause';
+  pause_type?: string;
+  speed_change?: 'faster' | 'slower' | 'normal';
+  tone_direction?: 'up' | 'down' | 'flat' | 'curve';
+  imagery_note?: string | null;
 }
 
 export interface ProsodyToken {
@@ -28,6 +37,11 @@ export interface ProsodySentence {
   sentence_weight: SentenceWeight;
   emotion?: string;
   tokens: ProsodyToken[];
+  // 测试版字段
+  sentence_tone?: string;
+  intonation?: 'up' | 'down' | 'flat' | 'curve';
+  voice_quality?: string;
+  emotion_note?: string;
 }
 
 export interface ProsodyParagraph {
@@ -35,6 +49,10 @@ export interface ProsodyParagraph {
   emotion: string;
   tempo?: string;
   sentences: ProsodySentence[];
+  // 测试版字段
+  summary?: string;
+  rhythm_type?: string;
+  identity_sense?: string;
 }
 
 export interface ProsodyResult {
@@ -46,7 +64,20 @@ export interface ProsodyResult {
     char_count: number;
     analysis_time_ms: number;
     model: string;
+    // 测试版字段
+    token_count?: number;
+    paragraph_count?: number;
+    sentence_count?: number;
+    converted_at?: string;
+    schema_version?: string;
   };
+  // 测试版顶层字段
+  overall_tone?: string;
+  purpose?: string;
+  imagery?: string;
+  inner_meaning?: string;
+  key_emotions?: string[];
+  climax_position?: string;
 }
 
 export type AnalysisPhase = 'idle' | 'agent1' | 'agent2' | 'rendering' | 'complete' | 'error';

@@ -11,13 +11,13 @@ def split_text_into_paragraphs(text: str) -> List[str]:
     return [p.strip() for p in re.split(r"\n\s*\n", text.strip()) if p.strip()]
 
 
-async def run_agent1(client: LLMClient, text: str) -> AsyncGenerator[dict, None]:
+async def run_agent1(client: LLMClient, text: str, prompt_name: str = "agent1_system.txt") -> AsyncGenerator[dict, None]:
     paragraphs = split_text_into_paragraphs(text)
     total = len(paragraphs)
     all_results = []
 
     for i, para in enumerate(paragraphs):
-        system = load_prompt("agent1_system.txt")
+        system = load_prompt(prompt_name)
         user_msg = f"\n注意：这是全文的第 {i + 1}/{total} 段。请只分析这一段文本，确保输出严格的 JSON 格式。\n\n{para}"
 
         full_text = ""
@@ -65,6 +65,7 @@ def _merge_paragraph_results(results: list) -> dict:
                                 "words": p, "stress": "normal", "tone": "flat",
                                 "pause_after": "medium", "link_next": False,
                                 "breath_before": "none", "volume_trend": "none",
+                                "neutral_tone": False, "erhua": False,
                             }],
                         }],
                     })

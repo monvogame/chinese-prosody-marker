@@ -26,6 +26,7 @@ export default function App() {
   const [config, setConfig] = useState<ApiConfig>(loadApiConfig);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [agentVersion, setAgentVersion] = useState<string>('original');
   const [progress, setProgress] = useState<AnalysisProgress>(INITIAL_PROGRESS);
   const [result, setResult] = useState<ProsodyResult | null>(null);
 
@@ -101,10 +102,11 @@ export default function App() {
           setAnalyzing(false);
         },
       },
+      agentVersion,
     );
 
     abortRef.current = controller;
-  }, [text, config]);
+  }, [text, config, agentVersion]);
 
   const handleRetry = useCallback(() => {
     setResult(null);
@@ -159,27 +161,40 @@ export default function App() {
           charCount={text.length}
         />
 
-        {/* Analyze button */}
-        <button
-          onClick={handleAnalyze}
-          disabled={analyzing || !text.trim() || !config.api_key}
-          className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg
-                     hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed
-                     transition-colors shadow-sm
-                     flex items-center justify-center gap-2"
-        >
-          {analyzing ? (
-            <>
-              <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              分析中...
-            </>
-          ) : (
-            '开始分析'
-          )}
-        </button>
+        {/* Analyze row with version selector */}
+        <div className="flex gap-2">
+          <select
+            value={agentVersion}
+            onChange={(e) => setAgentVersion(e.target.value)}
+            disabled={analyzing}
+            className="px-3 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg
+                       text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500
+                       disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          >
+            <option value="original">原版 Agent</option>
+            <option value="test_claude">测试版本 Claude</option>
+          </select>
+          <button
+            onClick={handleAnalyze}
+            disabled={analyzing || !text.trim() || !config.api_key}
+            className="flex-1 py-3 bg-blue-600 text-white font-medium rounded-lg
+                       hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed
+                       transition-colors shadow-sm
+                       flex items-center justify-center gap-2"
+          >
+            {analyzing ? (
+              <>
+                <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                分析中...
+              </>
+            ) : (
+              '开始分析'
+            )}
+          </button>
+        </div>
 
         {/* Progress */}
         <ProgressPanel

@@ -11,6 +11,7 @@ from utils.sse_helper import send_thinking, send_phase_complete, send_complete, 
 from utils.time_estimator import estimate_analysis_time, calculate_progress
 from agents.agent1_prosody import run_agent1
 from agents.agent2_marker import run_agent2
+from agents.test_agent2_marker import run_test_agent2
 
 router = APIRouter()
 
@@ -18,9 +19,10 @@ router = APIRouter()
 class AnalyzeRequest(BaseModel):
     text: str
     api_config: ApiConfigModel
+    version: str = "original"  # "original" | "test_claude"
 
 
-async def _run_analysis(text: str, config: ApiConfigModel):
+async def _run_analysis(text: str, config: ApiConfigModel, version: str = "original"):
     llm_config = LLMConfig(
         provider=config.provider, api_key=config.api_key,
         base_url=config.base_url, model=config.model,
@@ -31,12 +33,22 @@ async def _run_analysis(text: str, config: ApiConfigModel):
     start_time = time.time()
 
     try:
+        # 根据版本选择 prompt 和 agent2
+        if version == "test_claude":
+            prompt_name = "test_agent1_system.txt"
+            agent2_runner = run_test_agent2
+            agent2_label = "正在转换标记数据（测试版）..."
+        else:
+            prompt_name = "agent1_system.txt"
+            agent2_runner = run_agent2
+            agent2_label = "正在转换标记数据..."
+
         # Agent1 阶段
         agent1_start = time.time()
         yield send_thinking("agent1", "正在启动韵律分析...", 0)
 
         agent1_output = None
-        async for event in run_agent1(client, text):
+        async for event in run_agent1(client, text, prompt_name=prompt_name):
             if event["type"] == "thinking":
                 elapsed = time.time() - agent1_start
                 progress = calculate_progress("agent1", elapsed, estimate.total_seconds, char_count)
@@ -50,11 +62,11 @@ async def _run_analysis(text: str, config: ApiConfigModel):
 
         yield send_phase_complete("agent1", 80)
 
-        # Agent2 阶段（规则引擎，瞬时完成）
-        yield send_thinking("agent2", "正在转换标记数据...", 85)
+        # Agent2 阶段
+        yield send_thinking("agent2", agent2_label, 85)
 
         agent2_output = None
-        async for event in run_agent2(client, agent1_output):
+        async for event in agent2_runner(client, agent1_output):
             if event["type"] == "result":
                 agent2_output = event["data"]
 
@@ -64,13 +76,19 @@ async def _run_analysis(text: str, config: ApiConfigModel):
 
         yield send_phase_complete("agent2", 99)
 
-        # 完成
+        # 完成 — 附加 metadata
         total_elapsed = int((time.time() - start_time) * 1000)
-        agent2_output["metadata"] = {
-            "char_count": char_count,
-            "analysis_time_ms": total_elapsed,
-            "model": llm_config.get_model(),
-        }
+        if version == "test_claude":
+            # 测试版已有自己的 metadata，补充运行时信息
+            agent2_output.setdefault("metadata", {})
+            agent2_output["metadata"]["analysis_time_ms"] = total_elapsed
+            agent2_output["metadata"]["model"] = llm_config.get_model()
+        else:
+            agent2_output["metadata"] = {
+                "char_count": char_count,
+                "analysis_time_ms": total_elapsed,
+                "model": llm_config.get_model(),
+            }
         yield send_complete(agent2_output)
 
     except Exception as e:
@@ -100,7 +118,7 @@ async def analyze(request: AnalyzeRequest):
         )
 
     return StreamingResponse(
-        _run_analysis(text, request.api_config),
+        _run_analysis(text, request.api_config, request.version),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",

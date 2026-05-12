@@ -18,11 +18,15 @@ export const ProsodyResultPanel: React.FC<ProsodyResultProps> = ({
 
   const handleExport = async () => {
     const el = containerRef.current;
-    if (!el) return;
+    if (!el) {
+      alert('渲染区域未就绪，请稍后重试');
+      return;
+    }
     try {
       await exportToPng(el);
-    } catch {
-      alert('导出失败，请重试');
+    } catch (e) {
+      console.error('Export failed:', e);
+      alert(`导出失败：${e instanceof Error ? e.message : '未知错误'}`);
     }
   };
 

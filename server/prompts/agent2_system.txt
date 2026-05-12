@@ -18,12 +18,14 @@
    - `link_next`: 词组内相邻字之间 link_next=true，词组末尾字继承词组的 link_next
    - `breath_before`: 仅第一个字继承 breath_before，其余为 "none"
    - `volume_trend`: 词组内所有字继承相同的 volume_trend
+   - `neutral_tone`: 词组内所有字继承相同的 neutral_tone
+   - `erhua`: 词组内所有字继承相同的 erhua
 
 ## 验证规则（必须遵守）
 
 1. `breath_before` 为 "inhale" 或 "exhale" 时，前一个 token 的 `pause_after` 不能为 "none"
 2. `link_next` 为 true 时，`pause_after` 必须为 "none"
-3. 每个 token 必须包含完整的 marks 对象（所有 6 个字段）
+3. 每个 token 必须包含完整的 marks 对象（所有 8 个字段）
 4. `sentence_weight` 必须与源数据的 `weight` 一致
 
 ## 标点符号处理
@@ -68,7 +70,9 @@
                 "pause_after": "none|short|medium|long",
                 "link_next": true|false,
                 "breath_before": "none|inhale|exhale",
-                "volume_trend": "none|crescendo|decrescendo"
+                "volume_trend": "none|crescendo|decrescendo",
+                "neutral_tone": true|false,
+                "erhua": true|false
               }
             }
           ]

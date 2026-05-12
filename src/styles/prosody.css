@@ -110,3 +110,46 @@
   border-bottom: 2px solid;
   border-image: linear-gradient(to right, #e53e3e, transparent) 1;
 }
+
+/* 轻声 - 字符正上方圆点标记，模拟汉语教材轻声标注习惯 */
+.neutral-tone::before {
+  content: "·";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: bold;
+  color: #805ad5;
+  line-height: 1;
+}
+
+/* 儿化 - 字符右上角小 ʴ */
+.erhua::after {
+  content: "ʴ";
+  font-size: 7px;
+  color: #dd6b20;
+  vertical-align: super;
+  margin-left: 1px;
+}
+
+/* 测试版：语调曲折 */
+.tone-curve::after {
+  content: "↗↘";
+  font-size: 7px;
+  color: #805ad5;
+  vertical-align: super;
+  margin-left: 1px;
+}
+
+/* 测试版：语速加快 - 红色下划线 */
+.speed-faster {
+  border-bottom: 1.5px dashed #e53e3e;
+  padding-bottom: 1px;
+}
+
+/* 测试版：语速减慢 - 蓝色下划线 */
+.speed-slower {
+  border-bottom: 1.5px dotted #4299e1;
+  padding-bottom: 1px;
+}
