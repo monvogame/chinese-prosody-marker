@@ -1,0 +1,112 @@
+/* 标记渲染专用样式 */
+
+.prosody-result {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+/* 重音 */
+.stress-heavy {
+  font-weight: 700;
+  position: relative;
+}
+.stress-heavy::after {
+  content: "●";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 6px;
+  line-height: 1;
+  color: #e53e3e;
+}
+
+/* 轻读 */
+.stress-light {
+  opacity: 0.6;
+  font-size: 0.9em;
+}
+
+/* 停顿 */
+.pause-short::after {
+  content: "";
+  border-right: 1px solid #a0aec0;
+  margin: 0 2px 0 1px;
+}
+.pause-medium::after {
+  content: "";
+  border-right: 2px solid #4299e1;
+  margin: 0 4px 0 2px;
+}
+.pause-long::after {
+  content: "";
+  border-right: 3px solid #2b6cb0;
+  margin: 0 6px 0 3px;
+}
+
+/* 连读 */
+.link-next {
+  position: relative;
+}
+.link-next::before {
+  content: "⌒";
+  position: absolute;
+  top: -14px;
+  right: -4px;
+  font-size: 10px;
+  line-height: 1;
+  color: #48bb78;
+}
+
+/* 语调 */
+.tone-up::after {
+  content: "↑";
+  font-size: 8px;
+  color: #ed8936;
+  vertical-align: super;
+}
+.tone-down::after {
+  content: "↓";
+  font-size: 8px;
+  color: #4299e1;
+  vertical-align: sub;
+}
+
+/* 气息 */
+.breath-inhale::before {
+  content: "△";
+  color: #48bb78;
+  margin-right: 2px;
+  font-size: 8px;
+  vertical-align: super;
+}
+.breath-exhale::before {
+  content: "▽";
+  color: #ed8936;
+  margin-right: 2px;
+  font-size: 8px;
+  vertical-align: super;
+}
+
+/* 句重/句轻 */
+.sentence-heavy {
+  background: rgba(254, 178, 178, 0.2);
+  border-radius: 2px;
+  padding: 2px 0;
+}
+.sentence-light {
+  background: rgba(203, 213, 224, 0.2);
+  border-radius: 2px;
+  padding: 2px 0;
+}
+
+/* 渐强渐弱 - applied to wrapper spans */
+.volume-crescendo {
+  border-bottom: 2px solid;
+  border-image: linear-gradient(to right, transparent, #e53e3e) 1;
+}
+.volume-decrescendo {
+  border-bottom: 2px solid;
+  border-image: linear-gradient(to right, #e53e3e, transparent) 1;
+}
