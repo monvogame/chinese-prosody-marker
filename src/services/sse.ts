@@ -23,7 +23,8 @@ export function connectSSE(
 ): AbortController {
   const controller = new AbortController();
 
-  fetch('/api/analyze', {
+  const baseUrl = (window as any).electronAPI ? 'http://localhost:8000' : '';
+  fetch(`${baseUrl}/api/analyze`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text, api_config: apiConfig, version, directive }),

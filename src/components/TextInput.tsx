@@ -18,11 +18,9 @@ export const TextInput: React.FC<TextInputProps> = ({ value, onChange, disabled,
         disabled={disabled}
         placeholder={PLACEHOLDER}
         rows={8}
-        className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-lg resize-y
-                   focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent
-                   disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed
-                   text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
-                   bg-white dark:bg-slate-800
+        className="w-full px-4 py-3 glass-input rounded-lg resize-y
+                   focus:outline-none focus:ring-2 focus:ring-blue-400/50
+                   disabled:opacity-50 disabled:cursor-not-allowed
                    transition-all duration-200"
         style={{ minHeight: 160, fontSize: 15, lineHeight: 1.8 }}
       />

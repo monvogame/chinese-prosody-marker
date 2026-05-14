@@ -42,7 +42,7 @@ export const ProgressPanel: React.FC<ProgressPanelProps> = ({ progress, visible 
 
       {/* Thinking window */}
       {progress.thinking_content && (
-        <div className="bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg p-3 max-h-32 overflow-y-auto">
+        <div className="glass-card rounded-lg p-3 max-h-32 overflow-y-auto">
           <p className="text-xs text-gray-500 dark:text-gray-400 whitespace-pre-wrap break-words leading-relaxed">
             {progress.thinking_content.slice(-500)}
           </p>

@@ -62,12 +62,10 @@ export const DirectiveInput: React.FC<DirectiveInputProps> = ({ value, onChange,
             disabled={disabled}
             placeholder="例如：只标记林黛玉的台词、用B站鬼畜风格、这是角色临终前的独白..."
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg resize-y
-                       focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent
-                       disabled:bg-gray-100 dark:disabled:bg-slate-800 disabled:cursor-not-allowed
-                       text-sm text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
-                       bg-white dark:bg-slate-800
-                       transition-all duration-200"
+            className="w-full px-3 py-2 glass-input rounded-lg resize-y
+                       focus:outline-none focus:ring-2 focus:ring-blue-400/50
+                       disabled:opacity-50 disabled:cursor-not-allowed
+                       text-sm transition-all duration-200"
           />
         </div>
       )}

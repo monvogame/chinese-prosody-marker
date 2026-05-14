@@ -10,7 +10,8 @@ interface TestConnectionResult {
 }
 
 export async function testConnection(config: ApiConfig): Promise<TestConnectionResult> {
-  const resp = await fetch('/api/test-connection', {
+  const baseUrl = (window as any).electronAPI ? 'http://localhost:8000' : '';
+  const resp = await fetch(`${baseUrl}/api/test-connection`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ api_config: config }),

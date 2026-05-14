@@ -52,7 +52,7 @@ export const ProsodyResultPanel: React.FC<ProsodyResultProps> = ({
     <div className="space-y-4">
       {data && (
         <>
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
+          <div className="glass-card rounded-lg overflow-hidden">
             <div className="max-h-[70vh] overflow-y-auto">
               <ProsodyRenderer data={data} containerRef={containerRef as React.RefObject<HTMLDivElement>} />
             </div>

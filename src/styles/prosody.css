@@ -21,13 +21,13 @@
 }
 
 .prosody-result.text-gray-500,
-.prosody-result .text-gray-500 { color: #6b7280; }
+.prosody-result .text-gray-500 { color: #6a7a94; }
 .prosody-result.text-gray-400,
-.prosody-result .text-gray-400 { color: #9ca3af; }
+.prosody-result .text-gray-400 { color: #8897ae; }
 .prosody-result.text-gray-700,
-.prosody-result .text-gray-700 { color: #374151; }
+.prosody-result .text-gray-700 { color: #3b4a62; }
 .prosody-result.text-gray-800,
-.prosody-result .text-gray-800 { color: #1f2937; }
+.prosody-result .text-gray-800 { color: #2c3e5a; }
 .prosody-result.text-blue-700,
 .prosody-result .text-blue-700 { color: #1d4ed8; }
 .prosody-result.text-purple-600,
@@ -56,7 +56,7 @@
   line-height: 3.0 !important;
   letter-spacing: 0.02em;
   background: #ffffff;
-  color: #1e293b;
+  color: #334155;
 }
 
 /* 深色模式 */

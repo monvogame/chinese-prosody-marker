@@ -5,6 +5,8 @@ import { SettingsModal } from './components/SettingsModal';
 import { ProgressPanel } from './components/ProgressPanel';
 import { ProsodyResultPanel } from './components/ProsodyResult';
 import { MarkLegend } from './components/MarkLegend';
+import { FloatingChars } from './components/FloatingChars';
+import './styles/immersive.css';
 import { connectSSE } from './services/sse';
 import { loadApiConfig, saveApiConfig } from './services/storage';
 import type {
@@ -152,9 +154,21 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen">
+      {/* ---- 第 1 层：蓝色晕染色团 ---- */}
+      <div className="color-blobs-layer">
+        <div className="color-blob color-blob-1" />
+        <div className="color-blob color-blob-2" />
+        <div className="color-blob color-blob-3" />
+        <div className="color-blob color-blob-4" />
+      </div>
+
+      {/* ---- 第 2 层：中文字符漂浮 ---- */}
+      <FloatingChars />
+
+      {/* ---- 第 3 层：UI 内容 ---- */}
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 dark:bg-slate-900/80 dark:border-slate-700 sticky top-0 z-40">
+      <header className="glass-card sticky top-0 z-30 border-b border-white/20 dark:border-white/5">
         <div className="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
           <div>
             <h1 className="text-lg font-bold text-gray-800 dark:text-gray-100">中文韵律标记助手</h1>
@@ -197,7 +211,7 @@ export default function App() {
       </header>
 
       {/* Main */}
-      <main className="max-w-3xl mx-auto px-4 py-6 space-y-4" onKeyDown={handleKeyDown}>
+      <main className="max-w-3xl mx-auto px-4 py-6 space-y-4 relative z-10" onKeyDown={handleKeyDown}>
         {/* Directive */}
         <DirectiveInput
           value={directive}
@@ -219,8 +233,8 @@ export default function App() {
             value={agentVersion}
             onChange={(e) => setAgentVersion(e.target.value)}
             disabled={analyzing}
-            className="px-3 py-3 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-200 rounded-lg
-                       text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500
+            className="px-3 py-3 glass-input text-gray-800 dark:text-gray-100 rounded-lg
+                       text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-400/50
                        disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <option value="test_claude">测试版本 Claude</option>
@@ -288,7 +302,7 @@ export default function App() {
       />
 
       {/* Footer */}
-      <footer className="text-center py-6 text-xs text-gray-400 dark:text-gray-600">
+      <footer className="text-center py-6 text-xs text-gray-400 dark:text-gray-500">
         中文韵律标记助手 · 基于 AI 的朗读标记工具 · 纯前端存储 API Key
       </footer>
     </div>
